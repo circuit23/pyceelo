@@ -14,7 +14,7 @@ def get_result(roll_list):
     if (roll_1, roll_2, roll_3) == (4, 5, 6):
         return "WIN: 4-5-6 straight kill"
     elif all(item == roll_list[0] for item in roll_list):
-        return f"Trips: {roll_1}"
+        return f"TRIPS: {roll_1}"
     elif (roll_1, roll_2, roll_3) == (1, 2, 3):
         return "LOSE: 1-2-3 straight lose"
     elif roll_1 == roll_2:
