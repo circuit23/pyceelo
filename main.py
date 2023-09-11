@@ -51,12 +51,11 @@ class Player:
 def main_game():
     print('-----Cee-Lo, by Ryan Sessions-----')
     # Get player count, make sure it's from 2 to 4
-    player_count = None
-    while not player_count:
-        player_count = input("Enter the amount of total players (2-4).\n")
-        if not player_count.isdigit() or not (2 <= int(player_count) <= 4):
-            input("Please enter an integer from 2 to 4.\n")
-            player_count = None
+    while True:
+        player_count = input("Enter the amount of total players (2-4):\n")
+        if player_count.isdigit() and (2 <= int(player_count) <= 4):
+            break
+        print("Please enter an integer from 2 to 4.")
     # player_count = 2  # Setting default player_count for easier prototyping
     player_count = int(player_count)
     print(f"Total player count: {player_count}")
