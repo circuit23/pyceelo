@@ -3,33 +3,26 @@
 from random import randint
 
 
-def get_rolls(amount=3):
-    roll_list = []
-    for _ in range(amount):
-        roll_list.append(randint(1, 6))
-    return roll_list
+def get_roll(amount=3):
+    return [randint(1, 6) for _ in range(amount)]
 
 
 def get_result(roll_list):
     roll_list.sort()
-    if roll_list == [4, 5, 6]:
-        return "WIN 4-5-6 straight kill"
-    elif roll_list[0] == roll_list[1] == roll_list[2]:
-        return f"WIN triple {roll_list[0]}"
-    elif roll_list == [1, 2, 3]:
-        return "LOSE 1-2-3 straight lose"
-    elif roll_list[0] == roll_list[1]:
-        if roll_list[2] == 1:
-            return f"LOSE asshole 1s ({roll_list[2]} point)"
-        else:
-            return f"POINT: {roll_list[2]}"
-    elif roll_list[1] == roll_list[2]:
-        if roll_list[0] == 1:
-            return f"LOSE asshole 1s ({roll_list[0]} point)"
-        else:
-            return f"POINT: {roll_list[0]}"
+    roll_1, roll_2, roll_3 = roll_list
+
+    if (roll_1, roll_2, roll_3) == (4, 5, 6):
+        return "WIN: 4-5-6 straight kill"
+    elif all(item == roll_list[0] for item in roll_list):
+        return f"Trips: {roll_1}"
+    elif (roll_1, roll_2, roll_3) == (1, 2, 3):
+        return "LOSE: 1-2-3 straight lose"
+    elif roll_1 == roll_2:
+        return f"POINT: {roll_3}"
+    elif roll_2 == roll_3:
+        return f"POINT: {roll_1}"
     else:
-        print("re-roll.")
+        print("Re-roll.")
         return None
 
 
@@ -49,7 +42,7 @@ def main_game():
     print("baby's 1st roll")
     result = None
     while not result:
-        roll_list = get_rolls()
+        roll_list = get_roll()
         print(f'roll list : {roll_list}')
         result = get_result(roll_list)
     print(f'result - {result}')
