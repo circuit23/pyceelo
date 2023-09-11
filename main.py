@@ -1,7 +1,5 @@
 # Python Cee-Lo game by Ryan Sessions
-from time import sleep
-
-from dice_functions import get_roll, get_result
+from dice_rules import compare_results_pvp, get_roll, get_result
 from player_ai import Player
 
 
@@ -27,7 +25,6 @@ def main_game():
     print("--------------------------------------")
     # Iterate through all players who don't have a roll result until they all do
     while not all(player_dict[player].return_result() for player in player_dict):
-        sleep(1)
         for player in player_dict:
             if not player_dict[player].return_result():
                 roll_list = get_roll()
@@ -38,10 +35,13 @@ def main_game():
                     print(f"{player_dict[player].name}'s result: {result}")
                 else:  # Notify the players about the re-roll
                     print(f"{player_dict[player].name} will need to re-roll.")
-                sleep(1)
+            else:
+                print(f"{player_dict[player].name}'s result: {player_dict[player].return_result()}")
         print("--------------------------------------")
     for player in player_dict:
         print(f"{player_dict[player].name}'s result: {player_dict[player].return_result()}")
+
+    compare_results_pvp(player_dict)
 
 
 if __name__ == '__main__':
