@@ -22,28 +22,57 @@ def get_result(roll_list):
     elif roll_2 == roll_3:
         return f"POINT: {roll_1}"
     else:
-        print("Re-roll.")
+        # print("Re-roll.")
         return None
 
 
 class Player:
-    def __init__(self, name="Player", money=100, current_points=0):
+    def __init__(self, name="Player", money=100, points=0):
         self.name = name
-        self.money = money
-        self.current_points = current_points
+        self._money = money
+        self._points = points
 
-    def return_current_points(self):
-        print(self.current_points)
+    def return_points(self):
+        return self._points
+
+    def increment_points(self, amount):
+        self._points += amount
+
+    def reset_points(self):
+        self._points = 0
+
+    def return_money(self):
+        return self._money
+
+    def increment_money(self, amount: int):
+        self._money += amount
 
 
 def main_game():
     print('-----Cee-Lo, by Ryan Sessions-----')
-    # input("Press any key to play.")
+    # Get player count, make sure it's from 2 to 4
+    player_count = None
+    while not player_count:
+        player_count = input("Enter the amount of total players (2-4).\n")
+        if not player_count.isdigit() or not (2 <= int(player_count) <= 4):
+            input("Please enter an integer from 2 to 4.\n")
+            player_count = None
+    # player_count = 2  # Setting default player_count for easier prototyping
+    player_count = int(player_count)
+    print(f"Total player count: {player_count}")
+
+    # Create a dictionary containing all players and collect their names
+    players = dict()
+    for i in range(player_count):
+        name = input(f"Input name for player {i + 1}:\n")
+        players['player_' + str(i + 1)] = Player(name=name)
+
+    # TODO: Start working out rolls, roll order, matchups, etc
     print("baby's 1st roll")
     result = None
     while not result:
         roll_list = get_roll()
-        print(f'roll list : {roll_list}')
+        print(f'Baby rolled: {roll_list}')
         result = get_result(roll_list)
     print(f'result - {result}')
 
