@@ -6,7 +6,7 @@ from player_ai import Player
 
 
 def main_game():
-    print('-----Cee-Lo, by Ryan Sessions-----')
+    print('--------Cee-Lo, by Ryan Sessions--------')
     # Get player count, make sure it's from 2 to 4
     while True:
         player_count = input("Enter the amount of total players (2-4):\n")
@@ -24,8 +24,10 @@ def main_game():
         player_dict['player_' + str(i + 1)] = Player(name=name)
 
     # TODO: Work out rolls, roll order, matchups, etc
+    print("--------------------------------------")
     # Iterate through all players who don't have a roll result until they all do
     while not all(player_dict[player].return_result() for player in player_dict):
+        sleep(1)
         for player in player_dict:
             if not player_dict[player].return_result():
                 roll_list = get_roll()
@@ -33,10 +35,13 @@ def main_game():
                 result = get_result(roll_list)
                 if result:  # If they roll something, add the roll result to player object
                     player_dict[player].update_result(result)
-                    print(f"{player_dict[player].name}'s result - {result}")
+                    print(f"{player_dict[player].name}'s result: {result}")
                 else:  # Notify the players about the re-roll
                     print(f"{player_dict[player].name} will need to re-roll.")
-                sleep(1.5)
+                sleep(1)
+        print("--------------------------------------")
+    for player in player_dict:
+        print(f"{player_dict[player].name}'s result: {player_dict[player].return_result()}")
 
 
 if __name__ == '__main__':
