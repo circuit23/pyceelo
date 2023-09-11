@@ -11,17 +11,25 @@ def get_rolls(amount=3):
 
 
 def get_result(roll_list):
-    if sorted(roll_list) == [4, 5, 6] or roll_list[0] == roll_list[1] == roll_list[2]:
-        return "WIN"
-    elif sorted(roll_list) == [1, 2, 3]:
-        return "LOSE"
+    roll_list.sort()
+    if roll_list == [4, 5, 6]:
+        return "WIN 4-5-6 straight kill"
+    elif roll_list[0] == roll_list[1] == roll_list[2]:
+        return f"WIN triple {roll_list[0]}"
+    elif roll_list == [1, 2, 3]:
+        return "LOSE 1-2-3 straight lose"
     elif roll_list[0] == roll_list[1]:
-        return roll_list[2]
-    elif roll_list[0] == roll_list[2]:
-        return roll_list[1]
+        if roll_list[2] == 1:
+            return f"LOSE asshole 1s ({roll_list[2]} point)"
+        else:
+            return f"POINT: {roll_list[2]}"
     elif roll_list[1] == roll_list[2]:
-        return roll_list[0]
+        if roll_list[0] == 1:
+            return f"LOSE asshole 1s ({roll_list[0]} point)"
+        else:
+            return f"POINT: {roll_list[0]}"
     else:
+        print("re-roll.")
         return None
 
 
@@ -37,14 +45,14 @@ class Player:
 
 def main_game():
     print('-----Cee-Lo, by Ryan Sessions-----')
-    input("Press any key to play.")
+    # input("Press any key to play.")
     print("baby's 1st roll")
     result = None
     while not result:
         roll_list = get_rolls()
         print(f'roll list : {roll_list}')
         result = get_result(roll_list)
-    print(f'result : {result}')
+    print(f'result - {result}')
 
 
 if __name__ == '__main__':
