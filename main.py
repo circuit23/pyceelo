@@ -12,7 +12,7 @@ def main_game():
         if player_count == '':
             print('TEST MODE!!')
             player_count = 4
-            for i, foo in enumerate(['Wendy', 'Ryan', 'Crystal', 'Micah']):
+            for i, foo in enumerate(['Wendy', 'Ryan', 'Crystal', 'Brian']):
                 player_dict['player' + str(i + 1)] = Player(name=foo)
             break
         elif player_count.isdigit() and (2 <= int(player_count) <= 4):
