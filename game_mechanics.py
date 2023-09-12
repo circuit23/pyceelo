@@ -35,17 +35,18 @@ def compare_results_pvp(player_dict):
                     print(f"{player_dict[player].name} wins with the result '{player_dict[player].result_lf}'!")
             else:
                 top_rank = 0
-                winners_list = list()
-                # TODO: work out the bugs here with ties- a winner is still announced instead of roll-off
+                winners_list = []
                 for item in sorted(tier_list.items(), key=lambda item: item[1].result, reverse=True):
                     if top_rank < int(item[1].result[1]):
                         top_rank = int(item[1].result[1])
-                        winners_list = [item] # begin new winners_list with new top rank
-                    elif top_rank == item[1].result[1]:
-                        winners_list.append(item) # add to winners_list due to same rank
+                        winners_list = [item]  # begin new winners_list with new top rank
+                    elif top_rank == int(item[1].result[1]):
+                        winners_list.append(item)  # add to winners_list due to same rank
                     else:  # top_rank is greater, so discard non-winning entries
                         break
                 if len(winners_list) > 1:
+                    # TODO: do some recursion to iterate through roll-offs, also return better info about who
+                    #  specifically is rolling off
                     print('Roll-off!')
                 else:
                     for player in winners_list:
