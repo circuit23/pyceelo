@@ -10,7 +10,7 @@ def get_result(roll_list):
     roll_1, roll_2, roll_3 = roll_list
 
     if (roll_1, roll_2, roll_3) == (4, 5, 6):
-        return "WW", "WIN: 4-5-6 straight kill"
+        return "W9", "WIN: 4-5-6 straight kill"
     elif all(item == roll_list[0] for item in roll_list):
         return f"T{roll_1}", f"TRIPS: {roll_1}"
     elif roll_1 == roll_2:
@@ -18,39 +18,52 @@ def get_result(roll_list):
     elif roll_2 == roll_3:
         return f"P{roll_1}", f"POINT: {roll_1}"
     elif (roll_1, roll_2, roll_3) == (1, 2, 3):
-        return "LL", "LOSE: 1-2-3 straight lose"
+        return "L0", "LOSE: 1-2-3 straight lose"
     else:
         return None
 
 
-def compare_results_pvp(player_dict):
-    wins = {k: v for k, v in player_dict.items() if player_dict[k].result == "WW"}
-    trips = {k: v for k, v in player_dict.items() if player_dict[k].result[0] == "T"}
-    points = {k: v for k, v in player_dict.items() if player_dict[k].result[0] == "P"}
-    losers = {k: v for k, v in player_dict.items() if player_dict[k].result == "LL"}
-    for tier_list in [wins, trips, points, losers]:
-        if tier_list:
-            if len(tier_list) == 1:
-                for player in tier_list:
-                    print(f"{player_dict[player].name} wins with the result '{player_dict[player].result_lf}'!")
+def game_round_pvp(player_dict):
+    print("--------------------------------------")
+    # Iterate through all players who don't have a roll result until they all do
+    while not all(player_dict[player].result for player in player_dict):
+        for player in player_dict:
+            if not player_dict[player].result:
+                roll_list = get_roll()
+                print(f"{player_dict[player].name} rolled: {roll_list}")
+                result = get_result(roll_list)
+                if result:  # If they roll something, add the roll result to player object
+                    player_dict[player].result, player_dict[player].result_lf = result[0], result[1]
+                    print(f"{player_dict[player].name}'s result: {result[1]}")
+                else:  # Notify the players about the re-roll
+                    print(f"{player_dict[player].name} will need to re-roll.")
+            else:
+                print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
+        print("--------------------------------------")
+    # Compare results
+    wins = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "W"]
+    trips = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "T"]
+    points = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "P"]
+    # losers = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "L"]
+    for bracket_list in [wins, trips, points]:
+        if bracket_list:
+            if len(bracket_list) == 1:
+                return bracket_list[0][0]
             else:
                 top_rank = 0
                 winners_list = []
-                for item in sorted(tier_list.items(), key=lambda item: item[1].result, reverse=True):
-                    if top_rank < int(item[1].result[1]):
-                        top_rank = int(item[1].result[1])
-                        winners_list = [item]  # begin new winners_list with new top rank
-                    elif top_rank == int(item[1].result[1]):
-                        winners_list.append(item)  # add to winners_list due to same rank
-                    else:  # top_rank is greater, so discard non-winning entries
-                        break
+                for item in sorted(bracket_list, key=lambda item: item[1], reverse=True):
+                    if top_rank == int(item[1]):
+                        winners_list.append(item[0])  # add to winners_list due to same rank
+                    elif top_rank < int(item[1]):
+                        top_rank = int(item[1])
+                        winners_list = [item[0]]  # begin new winners_list with new top rank
                 if len(winners_list) > 1:
-                    # TODO: do some recursion to iterate through roll-offs, also return better info about who
-                    #  specifically is rolling off
-                    print('Roll-off!')
-                else:
-                    for player in winners_list:
-                        print(f"{player[1].name} wins with the result '{player[1].result_lf}'!")
-            break
+                    print("Roll-off!")
+                    for winner in winners_list:
+                        print(f"{player_dict[winner].name}- {player_dict[winner].result_lf}")
+                        player_dict[winner].result, player_dict[winner].result_lf = None, None
+                    game_round_pvp({k: player_dict[k] for k in winners_list})
+                return winners_list[0]
         else:
             continue
