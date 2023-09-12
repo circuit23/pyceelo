@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Python Cee-Lo game by Ryan Sessions
 from game_mechanics import game_round_pvp
 from player_ai import Player
@@ -31,10 +33,13 @@ def main_game():
     # main game round loop
     while True:
         round_winner = game_round_pvp(player_dict)
-        print(f"{player_dict[round_winner].name} wins the round with {player_dict[round_winner].result_lf}!")
-        input("Press any key to begin next round.")
-        # Do money math
-        # print('math')
+        if round_winner:
+            print(f"{player_dict[round_winner].name} wins the round with {player_dict[round_winner].result_lf}!")
+            input("Press any key to begin next round.")
+            # Do money math
+            # print('math')
+        else:
+            print("There was no winner this round... you are all losers!")
 
 
 if __name__ == '__main__':

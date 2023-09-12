@@ -50,7 +50,9 @@ def game_round_pvp(player_dict):
     wins = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "W"]
     trips = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "T"]
     points = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "P"]
-    # losers = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "L"]
+    losers = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "L"]
+    if losers and len(losers) == len(player_dict):
+        return None
     for bracket_list in [wins, trips, points]:
         if bracket_list:
             if len(bracket_list) == 1:
@@ -72,5 +74,3 @@ def game_round_pvp(player_dict):
                             print('tied with')
                     game_round_pvp({k: player_dict[k] for k in winners_list})
                 return winners_list[0]
-        else:
-            continue
