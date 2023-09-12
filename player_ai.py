@@ -1,14 +1,9 @@
 class Player:
-    def __init__(self, name="Player", money=100, result=None):
+    def __init__(self, name="Player", money=100, result=None, result_lf=None):
         self.name = name
         self._money = money
-        self._result = result
-
-    def return_result(self):
-        return self._result
-
-    def update_result(self, result):
-        self._result = result
+        self.result = result
+        self.result_lf = result_lf
 
     def return_money(self):
         return self._money
