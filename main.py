@@ -1,5 +1,5 @@
 # Python Cee-Lo game by Ryan Sessions
-from game_mechanics import game_round_pvp, score_reset
+from game_mechanics import game_round_pvp
 from player_ai import Player
 
 
