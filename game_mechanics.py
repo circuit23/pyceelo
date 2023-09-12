@@ -11,7 +11,7 @@ def get_result(roll_list):
 
     if (roll_1, roll_2, roll_3) == (4, 5, 6):
         return "W9", "WIN: 4-5-6 straight kill"
-    elif all(item == roll_list[0] for item in roll_list):
+    elif all(roll == roll_list[0] for roll in roll_list):
         return f"T{roll_1}", f"TRIPS: {roll_1}"
     elif roll_1 == roll_2:
         return f"P{roll_3}", f"POINT: {roll_3}"
