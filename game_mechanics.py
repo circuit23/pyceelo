@@ -23,7 +23,13 @@ def get_result(roll_list):
         return None
 
 
+def score_reset(player_dict):
+    for player in player_dict:
+        player_dict[player].result, player_dict[player].result_lf = None, None
+
+
 def game_round_pvp(player_dict):
+    score_reset(player_dict)
     print("--------------------------------------")
     # Iterate through all players who don't have a roll result until they all do
     while not all(player_dict[player].result for player in player_dict):
@@ -61,8 +67,9 @@ def game_round_pvp(player_dict):
                 if len(winners_list) > 1:
                     print("Roll-off!")
                     for winner in winners_list:
-                        print(f"{player_dict[winner].name}- {player_dict[winner].result_lf}")
-                        player_dict[winner].result, player_dict[winner].result_lf = None, None
+                        print(f"{player_dict[winner].name} ({player_dict[winner].result_lf})")
+                        if not winner == winners_list[-1]:
+                            print('tied with')
                     game_round_pvp({k: player_dict[k] for k in winners_list})
                 return winners_list[0]
         else:

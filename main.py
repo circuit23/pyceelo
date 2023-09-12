@@ -1,5 +1,5 @@
 # Python Cee-Lo game by Ryan Sessions
-from game_mechanics import game_round_pvp
+from game_mechanics import game_round_pvp, score_reset
 from player_ai import Player
 
 
@@ -28,11 +28,13 @@ def main_game():
             break
         print("Please enter an integer from 2 to 4.")
 
-    # main game loop
-    round_winner = game_round_pvp(player_dict)
-    print(f"{player_dict[round_winner].name} wins the round with {player_dict[round_winner].result_lf}!")
-    # Do money math
-    # print('math')
+    # main game round loop
+    while True:
+        round_winner = game_round_pvp(player_dict)
+        print(f"{player_dict[round_winner].name} wins the round with {player_dict[round_winner].result_lf}!")
+        input("Press any key to begin next round.")
+        # Do money math
+        # print('math')
 
 
 if __name__ == '__main__':
