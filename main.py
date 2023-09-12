@@ -35,11 +35,11 @@ def main_game():
         round_winner = game_round_pvp(player_dict)
         if round_winner:
             print(f"{player_dict[round_winner].name} wins the round with {player_dict[round_winner].result_lf}!")
-            input("Press any key to begin next round.")
-            # Do money math
-            # print('math')
         else:
             print("There was no winner this round... you are all losers!")
+        input("Press any key to begin next round.")
+        # Do money math
+        # print('math')
 
 
 if __name__ == '__main__':
