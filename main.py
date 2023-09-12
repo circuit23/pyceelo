@@ -45,9 +45,6 @@ def main_game():
                 print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
         print("--------------------------------------")
     # Return results
-    for player in player_dict:
-        print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
-
     compare_results_pvp(player_dict)
     # Do money math
 
