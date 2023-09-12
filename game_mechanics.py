@@ -31,10 +31,13 @@ def compare_results_pvp(player_dict):
     for tier_list in [wins, trips, points, losers]:
         if tier_list:
             if len(tier_list) == 1:
-                print([f"{player_dict[player].name} wins with the result '{player_dict[player].result_lf}'" for player
-                       in tier_list])
+                for player in tier_list:
+                    print(f"{player_dict[player].name} wins with the result '{player_dict[player].result_lf}'")
             else:
                 # TODO: Run through levels of trips and points, then return the winner.  Else: roll-off!
+                # something like:
+                # for item in dict(sorted(tier_list.items(), key=lambda item: item[1].result, reverse=True)):
+                    # compare item0 to item1, etc
                 print("Roll-off!")
                 for item in dict(sorted(tier_list.items(), key=lambda item: item[1].result, reverse=True)):
                     print(f"{tier_list[item].name}: {tier_list[item].result_lf}")

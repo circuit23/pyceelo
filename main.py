@@ -47,6 +47,7 @@ def main_game():
     # Return results
     compare_results_pvp(player_dict)
     # Do money math
+    # print('math')
 
 
 if __name__ == '__main__':
