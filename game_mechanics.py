@@ -28,6 +28,28 @@ def score_reset(player_dict):
         player_dict[player].result, player_dict[player].result_lf = None, None
 
 
+def get_winners(bracket_list):
+    sorted_list = sorted(bracket_list, key=lambda item: item[1], reverse=True)
+    top_rank = 0
+    winners_list = []
+
+    for player in sorted_list:
+        player_rank = int(player[1])
+
+        if player_rank > top_rank:
+            top_rank = player_rank
+            winners_list = [player[0]]  # begin new winners_list with new top rank
+
+        elif player_rank == top_rank:
+            winners_list.append(player[0])
+
+        else:
+            # No need to evaluate lower ranked players
+            break
+
+    return winners_list
+
+
 def game_round_pvp(player_dict):
     score_reset(player_dict)
     print("--------------------------------------")
@@ -46,31 +68,40 @@ def game_round_pvp(player_dict):
             else:
                 print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
         print("--------------------------------------")
+
     # Compare results
     wins = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "W"]
     trips = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "T"]
     points = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "P"]
     losers = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "L"]
+
     if losers and len(losers) == len(player_dict):
         return None
     for bracket_list in [wins, trips, points]:
-        if bracket_list:
-            if len(bracket_list) == 1:
-                return bracket_list[0][0]
-            else:
-                top_rank = 0
-                winners_list = []
-                for item in sorted(bracket_list, key=lambda item: item[1], reverse=True):
-                    if top_rank == int(item[1]):
-                        winners_list.append(item[0])  # add to winners_list due to same rank
-                    elif top_rank < int(item[1]):
-                        top_rank = int(item[1])
-                        winners_list = [item[0]]  # begin new winners_list with new top rank
-                if len(winners_list) > 1:
-                    print("Roll-off!")
-                    for winner in winners_list:
-                        print(f"{player_dict[winner].name} ({player_dict[winner].result_lf})")
-                        if not winner == winners_list[-1]:
-                            print('tied with')
-                    game_round_pvp({k: player_dict[k] for k in winners_list})
-                return winners_list[0]
+        # Continue to the next iteration if the list is empty.
+        if not bracket_list:
+            continue
+
+        # If there is only one element in the list, return the first
+        # element of the contained tuple.
+        if len(bracket_list) == 1:
+            return bracket_list[0][0]
+
+        # In case there are multiple elements in the list.
+        winners_list = get_winners(bracket_list)
+
+        # If there's only one winner, return it.
+        if len(winners_list) == 1:
+            return winners_list[0]
+
+        # Handle multiple winners.
+        print("Roll-off!")
+        for winner in winners_list:
+            print(f"{player_dict[winner].name} ({player_dict[winner].result_lf})")
+            if not winner == winners_list[-1]:
+                print('tied with')
+
+        roll_off_dict = {player: player_dict[player] for player in winners_list}
+        roll_off_winner = game_round_pvp(roll_off_dict)  # This should return the winner's id.
+
+        return roll_off_winner  # Return the winner of roll-off.

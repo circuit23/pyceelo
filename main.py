@@ -11,12 +11,12 @@ def main_game():
     # Get player count, make sure it's from 2 to 4
     while True:
         player_count = input("Enter the amount of total players (2-4): ")
-        player_dict = dict()
+        player_list = dict()
         if player_count == '':
             print('TEST MODE!!')
             player_count = 4
             for i, foo in enumerate(['Wendy', 'Ryan', 'Crystal', 'Brian']):
-                player_dict['player' + str(i + 1)] = Player(name=foo)
+                player_list['player' + str(i + 1)] = Player(name=foo)
             break
         elif player_count.isdigit() and (2 <= int(player_count) <= 4):
             player_count = int(player_count)
@@ -26,15 +26,15 @@ def main_game():
             # Create a dictionary containing all players and collect their names
             for i in range(player_count):
                 name = input(f"Input name for player {i + 1}: ")
-                player_dict['player_' + str(i + 1)] = Player(name=name)
+                player_list['player_' + str(i + 1)] = Player(name=name)
             break
         print("Please enter an integer from 2 to 4.")
 
     # main game round loop
     while True:
-        round_winner = game_round_pvp(player_dict)
+        round_winner = game_round_pvp(player_list)
         if round_winner:
-            print(f"{player_dict[round_winner].name} wins the round with {player_dict[round_winner].result_lf}!")
+            print(f"{player_list[round_winner].name} wins the round with {player_list[round_winner].result_lf}!")
         else:
             print("There was no winner this round... you are all losers!")
         input("Press any key to begin next round.")
