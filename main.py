@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Python Cee-Lo game by Ryan Sessions
-from game_mechanics import game_round_pvp
+from game_mechanics import game_round_pvp, get_wagers
 from player_ai import Player
 
 
@@ -28,15 +28,24 @@ def main_game():
             break
         print("Please enter an integer from 2 to 4.")
 
+    round_index = 0
     # main game round loop
     while True:
+        round_index += 1
+        print(f"--*Round {round_index}*--")
+        for player in player_list:
+            print(f"{player_list[player].name}: {player_list[player].return_money()}")
+        wager, total_pot = get_wagers(player_list)
+        print(f"Each player bets {wager}, for a total of {total_pot}.")
         round_winner = game_round_pvp(player_list)
         if round_winner:
-            print(f"{player_list[round_winner].name} wins the round with {player_list[round_winner].result_lf}!")
+            print(f"{player_list[round_winner].name} nets {total_pot - wager} monies with "
+                  f"{player_list[round_winner].result_lf}!")
+            player_list[round_winner].increment_money(total_pot)
         else:
             print("There was no winner this round... you are all losers!")
+        # TODO: implement a check to remove a player with 0 monies
         input("Press any key to begin next round.")
-        # TODO: implement a wagering system
 
 
 if __name__ == '__main__':

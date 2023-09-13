@@ -23,6 +23,26 @@ def get_result(roll_list):
         return None
 
 
+def get_wagers(player_list):
+    wager = None
+    while not wager:
+        player_wager = input(f"How much monies should each player bet? 1 to "
+                             f"{min([player_list[player].return_money() for player in player_list])}: ")
+        if (player_wager.isdigit() and
+                (1 <= int(player_wager) <= min([player_list[player].return_money() for player in player_list]))):
+            wager = int(player_wager)
+            break
+        else:
+            print(f"Please enter an integer from 1 to "
+                  f"{min([player_list[player].return_money() for player in player_list])}.")
+            wager = None
+    total_pot = wager * len(player_list)
+    for player in player_list:
+        player_list[player].increment_money(-1 * wager)
+
+    return wager, total_pot
+
+
 def roll_all_players(player_dict):
     print("--------------------------------------")
     # Iterate through all players who don't have a roll result until they all do
