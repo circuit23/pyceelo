@@ -23,6 +23,25 @@ def get_result(roll_list):
         return None
 
 
+def roll_all_players(player_dict):
+    print("--------------------------------------")
+    # Iterate through all players who don't have a roll result until they all do
+    while not all(player_dict[player].result for player in player_dict):
+        for player in player_dict:
+            if not player_dict[player].result:
+                roll_list = get_roll()
+                print(f"{player_dict[player].name} rolled: {roll_list}")
+                result = get_result(roll_list)
+                if result:  # If they roll something, add the roll result to player object
+                    player_dict[player].result, player_dict[player].result_lf = result[0], result[1]
+                    print(f"{player_dict[player].name}'s result: {result[1]}")
+                else:  # Notify the players about the re-roll
+                    print(f"{player_dict[player].name} will need to re-roll.")
+            else:
+                print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
+        print("--------------------------------------")
+
+
 def score_reset(player_dict):
     for player in player_dict:
         player_dict[player].result, player_dict[player].result_lf = None, None
@@ -51,23 +70,9 @@ def get_winners(bracket_list):
 
 
 def game_round_pvp(player_dict):
+    # Reset scores, then roll up all the players' dice
     score_reset(player_dict)
-    print("--------------------------------------")
-    # Iterate through all players who don't have a roll result until they all do
-    while not all(player_dict[player].result for player in player_dict):
-        for player in player_dict:
-            if not player_dict[player].result:
-                roll_list = get_roll()
-                print(f"{player_dict[player].name} rolled: {roll_list}")
-                result = get_result(roll_list)
-                if result:  # If they roll something, add the roll result to player object
-                    player_dict[player].result, player_dict[player].result_lf = result[0], result[1]
-                    print(f"{player_dict[player].name}'s result: {result[1]}")
-                else:  # Notify the players about the re-roll
-                    print(f"{player_dict[player].name} will need to re-roll.")
-            else:
-                print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
-        print("--------------------------------------")
+    roll_all_players(player_dict)
 
     # Separate into brackets and compare results
     wins = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "W"]

@@ -8,19 +8,17 @@ from player_ai import Player
 def main_game():
     print('--------Cee-Lo, by Ryan Sessions--------')
     # Set up game (mode, players, etc.)
-    # Get player count, make sure it's from 2 to 4
     while True:
+        # Get player count, make sure it's from 2 to 4
         player_count = input("Enter the amount of total players (2-4): ")
         player_list = dict()
         if player_count == '':
             print('TEST MODE!!')
-            player_count = 4
             for i, foo in enumerate(['Wendy', 'Ryan', 'Crystal', 'Brian']):
                 player_list['player' + str(i + 1)] = Player(name=foo)
             break
         elif player_count.isdigit() and (2 <= int(player_count) <= 4):
             player_count = int(player_count)
-            # player_count = 2  # Setting default player_count for easier prototyping
             print(f"Total player count: {player_count}")
 
             # Create a dictionary containing all players and collect their names
@@ -38,8 +36,7 @@ def main_game():
         else:
             print("There was no winner this round... you are all losers!")
         input("Press any key to begin next round.")
-        # Do money math
-        # print('math')
+        # TODO: implement a wagering system
 
 
 if __name__ == '__main__':
