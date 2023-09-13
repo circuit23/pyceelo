@@ -69,7 +69,7 @@ def game_round_pvp(player_dict):
                 print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
         print("--------------------------------------")
 
-    # Compare results
+    # Separate into brackets and compare results
     wins = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "W"]
     trips = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "T"]
     points = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "P"]
@@ -88,20 +88,20 @@ def game_round_pvp(player_dict):
             return bracket_list[0][0]
 
         # In case there are multiple elements in the list.
-        winners_list = get_winners(bracket_list)
+        bracket_winners = get_winners(bracket_list)
 
         # If there's only one winner, return it.
-        if len(winners_list) == 1:
-            return winners_list[0]
+        if len(bracket_winners) == 1:
+            return bracket_winners[0]
 
         # Handle multiple winners.
         print("Roll-off!")
-        for winner in winners_list:
+        for winner in bracket_winners:
             print(f"{player_dict[winner].name} ({player_dict[winner].result_lf})")
-            if not winner == winners_list[-1]:
+            if not winner == bracket_winners[-1]:
                 print('tied with')
 
-        roll_off_dict = {player: player_dict[player] for player in winners_list}
+        roll_off_dict = {player: player_dict[player] for player in bracket_winners}
         roll_off_winner = game_round_pvp(roll_off_dict)  # This should return the winner's id.
 
         return roll_off_winner  # Return the winner of roll-off.
