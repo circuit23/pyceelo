@@ -35,16 +35,23 @@ def main_game():
         print(f"--*Round {round_index}*--")
         for player in player_list:
             print(f"{player_list[player].name}: {player_list[player].return_money()}")
-        wager, total_pot = get_wagers(player_list)
+        # Only allow players with more than 0 monies to play
+        active_players = {k: v for k, v in player_list.items() if v.return_money() > 0}
+        if len(active_players) == 1:  # Found a winner, so announce that and exit the game
+            game_winner = active_players.popitem()
+            print(f"{game_winner[1].name} won the game by taking everyone else's monies!")
+            input("Press any key to end the game.")
+            exit(0)
+        # Get the wager, subtract from everyone's totals
+        wager, total_pot = get_wagers(active_players)
         print(f"Each player bets {wager}, for a total of {total_pot}.")
-        round_winner = game_round_pvp(player_list)
+        round_winner = game_round_pvp(active_players)
         if round_winner:
             print(f"{player_list[round_winner].name} nets {total_pot - wager} monies with "
                   f"{player_list[round_winner].result_lf}!")
             player_list[round_winner].increment_money(total_pot)
         else:
             print("There was no winner this round... you are all losers!")
-        # TODO: implement a check to remove a player with 0 monies
         input("Press any key to begin next round.")
 
 

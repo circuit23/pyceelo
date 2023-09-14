@@ -107,8 +107,7 @@ def game_round_pvp(player_dict):
         if not bracket_list:
             continue
 
-        # If there is only one element in the list, return the first
-        # element of the contained tuple.
+        # If there is only one element in the list, return the first element of the contained tuple.
         if len(bracket_list) == 1:
             return bracket_list[0][0]
 
