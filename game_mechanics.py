@@ -122,6 +122,8 @@ def game_round_pvp(player_dict, roll_off=False, wager=0, total_pot=0):
     score_reset(player_dict)
     roll_all_players(player_dict)
 
+    round_winner = None
+
     # Separate into brackets and compare results
     wins = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "W"]
     trips = [(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == "T"]
