@@ -52,7 +52,8 @@ def main_game():
             print(result)
         elif game_mode == 'BANK':
             # TODO: implement bank round loop
-            game_round_bank(active_players)
+            result = game_round_bank(active_players)
+            print(result)
         input("Press any key to begin next round.")
 
 
