@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, shuffle
 
 
 def get_roll(amount=3):
@@ -61,22 +61,24 @@ def get_wagers(player_list, game_mode):
         pass
 
 
-def roll_all_players(player_dict):
+def roll_all_players(player_dict, game_mode, play_order):
     print("--------------------------------------")
+
     # Iterate through all players who don't have a roll result until they all do
-    while not all(player_dict[player].result for player in player_dict):
-        for player in player_dict:
-            if not player_dict[player].result:
-                roll_list = get_roll()
-                print(f"{player_dict[player].name} rolled: {roll_list}")
-                result = get_result(roll_list)
-                if result:  # If they roll something, add the roll result to player object
-                    player_dict[player].result, player_dict[player].result_lf = result[0], result[1]
-                    print(f"{player_dict[player].name}'s result: {result[1]}")
-                else:  # Notify the players about the re-roll
-                    print(f"{player_dict[player].name} will need to re-roll.")
-            else:
-                print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
+    while not all(player_dict[player].result for player in player_dict if player in play_order):
+        for player in play_order:
+            if player in player_dict:
+                if not player_dict[player].result:
+                    roll_list = get_roll()
+                    print(f"{player_dict[player].name} rolled: {roll_list}")
+                    result = get_result(roll_list)
+                    if result:  # If they roll something, add the roll result to player object
+                        player_dict[player].result, player_dict[player].result_lf = result[0], result[1]
+                        print(f"{player_dict[player].name}'s result: {result[1]}")
+                    else:  # Notify the players about the re-roll
+                        print(f"{player_dict[player].name} will need to re-roll.")
+                else:
+                    print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
         print("--------------------------------------")
 
 
@@ -85,7 +87,7 @@ def score_reset(player_dict):
         player_dict[player].result, player_dict[player].result_lf = None, None
 
 
-def get_winners(bracket_list):
+def get_bracket_winners(bracket_list):
     sorted_list = sorted(bracket_list, key=lambda item: item[1], reverse=True)
     top_rank = 0
     winners_list = []
@@ -118,13 +120,13 @@ def print_winner(player_dict, winner, wager, total_pot, game_mode):
         print('Invalid game mode.')
 
 
-def determine_winner(bracket_list, player_dict, wager, total_pot):
+def determine_winner(bracket_list, player_dict, wager, total_pot, play_order):
     if len(bracket_list) == 1:
         round_winner = bracket_list[0][0]
     else:
-        bracket_winners = get_winners(bracket_list)
+        bracket_winners = get_bracket_winners(bracket_list)
         if len(bracket_winners) == 1:
-            round_winner = bracket_list[0][0]
+            round_winner = bracket_winners[0]
         else:
             print("Roll-off!")
             for winner in bracket_winners:
@@ -132,19 +134,20 @@ def determine_winner(bracket_list, player_dict, wager, total_pot):
                 print(
                     f"{player.name} ({player.result_lf}){' tied with' if not winner == bracket_winners[-1] else ''}")
             roll_off_dict = {player: player_dict[player] for player in bracket_winners}
-            return game_round_pvp(player_dict=roll_off_dict, roll_off=True, wager=wager, total_pot=total_pot)
+            return game_round_pvp(player_dict=roll_off_dict, roll_off=True, wager=wager, total_pot=total_pot,
+                                  play_order=play_order)
     return print_winner(player_dict=player_dict, winner=round_winner, wager=wager, total_pot=total_pot,
                         game_mode='PvP')
 
 
-def game_round_pvp(player_dict, roll_off=False, wager=0, total_pot=0):
+def game_round_pvp(player_dict, roll_off=False, wager=0, total_pot=0, play_order=None):
     if not roll_off:
         # Get the wager, subtract from everyone's totals
         wager, total_pot = get_wagers(player_dict, game_mode='PvP')
 
     # Reset scores, then roll up all the players' dice
     score_reset(player_dict)
-    roll_all_players(player_dict)
+    roll_all_players(player_dict=player_dict, game_mode='PvP', play_order=play_order)
 
     # Separate into brackets and compare results
     result_types = ['W', 'T', 'P', 'L']
@@ -157,8 +160,33 @@ def game_round_pvp(player_dict, roll_off=False, wager=0, total_pot=0):
 
     for bracket_list in brackets[:-1]:
         if bracket_list:
-            return determine_winner(bracket_list, player_dict, wager, total_pot)
+            return determine_winner(bracket_list, player_dict, wager, total_pot, play_order)
 
 
-def game_round_bank(active_players):
-    pass
+def game_round_bank(player_dict, roll_off=False, wager=0, total_pot=0, banker=None):
+    if not roll_off:
+        # First determine banker/player order
+        play_order = determine_play_order(player_dict, game_mode='BANK')
+        # Collect initial stake from banker
+        # After that, allow remaining players to fade
+        # Then banker rolls
+            # Determine if instant win
+            # Else players roll against banker
+
+
+def determine_play_order(player_dict, game_mode):
+    play_order = [f"player{i + 1}" for i in range(len(player_dict))]
+    if game_mode == 'PvP':
+        shuffle(play_order)
+        return play_order
+    elif game_mode == 'BANK':
+        banker_reset(player_dict)
+        banker_index = randint(0, len(play_order))
+        print(f"{player_dict[play_order[banker_index]].name} has been randomly chosen as the banker.")
+        player_dict[f'{play_order[banker_index]}'].play_order = 'b'
+        return play_order[banker_index:] + play_order[:banker_index]
+
+
+def banker_reset(player_dict):
+    for player in player_dict:
+        player_dict[player].banker = None

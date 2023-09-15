@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Python Cee-Lo game by Ryan Sessions
-from game_mechanics import game_round_pvp, get_game_mode, game_round_bank
+from game_mechanics import game_round_pvp, get_game_mode, game_round_bank, determine_play_order
 from player_ai import Player
 
 
@@ -48,10 +48,13 @@ def main_game():
 
         # Pass to the appropriate game handler depending on game_mode
         if game_mode == 'PvP':
-            result = game_round_pvp(active_players)
+            play_order = determine_play_order(player_list, game_mode='PvP')
+            # TODO: make this random just once, not necessarily every round
+            result = game_round_pvp(active_players, play_order=play_order)
             print(result)
         elif game_mode == 'BANK':
             # TODO: implement bank round loop
+            play_order = determine_play_order(player_list, game_mode='BANK')
             result = game_round_bank(active_players)
             print(result)
         input("Press any key to begin next round.")
