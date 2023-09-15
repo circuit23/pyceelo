@@ -24,7 +24,7 @@ def main_game():
             # Create a dictionary containing all players and collect their names
             for i in range(player_count):
                 name = input(f"Input name for player {i + 1}: ")
-                player_list['player_' + str(i + 1)] = Player(name=name)
+                player_list['player' + str(i + 1)] = Player(name=name)
             break
         print("Please enter an integer from 2 to 4.")
 
@@ -48,8 +48,9 @@ def main_game():
 
         # Pass to the appropriate game handler depending on game_mode
         if game_mode == 'PvP':
-            play_order = determine_play_order(player_list, game_mode='PvP')
-            # TODO: make this random just once, not necessarily every round
+            if round_index == 1:
+                play_order = determine_play_order(player_list, game_mode='PvP')
+                input('Randomly determining order of play.  Press enter.')
             result = game_round_pvp(active_players, play_order=play_order)
             print(result)
         elif game_mode == 'BANK':
