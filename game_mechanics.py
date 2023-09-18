@@ -26,29 +26,38 @@ def get_result(roll_list):
 def get_game_mode():
     game_mode = None
     while not game_mode:
-        game_mode_choice = input("Should one of the players act as a [b]ank, or is this [w]inner take all (b/w)? ")
-        if game_mode_choice == 'b' or game_mode_choice == 'B':
-            game_mode = 'BANK'
-        elif game_mode_choice == 'w' or game_mode_choice == 'W':
-            game_mode = 'PvP'
+        game_mode_choice = input(
+            "Should one of the players act as a [b]ank, or is this [w]inner take all (b/w)? "
+        )
+        if game_mode_choice == "b" or game_mode_choice == "B":
+            game_mode = "BANK"
+        elif game_mode_choice == "w" or game_mode_choice == "W":
+            game_mode = "PvP"
         print("Please enter either 'b' or 'w'.")
 
     return game_mode
 
 
 def get_wagers(player_list, game_mode):
-    if game_mode == 'PvP':
+    if game_mode == "PvP":
         wager = None
         while not wager:
-            player_wager = input(f"How much monies should each player bet? 1 to "
-                                 f"{min([player_list[player].return_money() for player in player_list])}: ")
-            if (player_wager.isdigit() and
-                    (1 <= int(player_wager) <= min([player_list[player].return_money() for player in player_list]))):
+            player_wager = input(
+                f"How much monies should each player bet? 1 to "
+                f"{min([player_list[player].return_money() for player in player_list])}: "
+            )
+            if player_wager.isdigit() and (
+                1
+                <= int(player_wager)
+                <= min([player_list[player].return_money() for player in player_list])
+            ):
                 wager = int(player_wager)
                 break
             else:
-                print(f"Please enter an integer from 1 to "
-                      f"{min([player_list[player].return_money() for player in player_list])}.")
+                print(
+                    f"Please enter an integer from 1 to "
+                    f"{min([player_list[player].return_money() for player in player_list])}."
+                )
                 wager = None
         total_pot = wager * len(player_list)
         for player in player_list:
@@ -56,7 +65,7 @@ def get_wagers(player_list, game_mode):
 
         print(f"Each player bets {wager}, for a total pot of {total_pot}.")
         return wager, total_pot
-    elif game_mode == 'BANK':
+    elif game_mode == "BANK":
         # TODO: implement bank wagers
         pass
 
@@ -65,20 +74,29 @@ def roll_all_players(player_dict, game_mode, play_order):
     print("--------------------------------------")
 
     # Iterate through all players who don't have a roll result until they all do
-    while not all(player_dict[player].result for player in player_dict if player in play_order):
+    while not all(
+        player_dict[player].result for player in player_dict if player in play_order
+    ):
         for player in play_order:
             if player in player_dict:
                 if not player_dict[player].result:
                     roll_list = get_roll()
                     print(f"{player_dict[player].name} rolled: {roll_list}")
                     result = get_result(roll_list)
-                    if result:  # If they roll something, add the roll result to player object
-                        player_dict[player].result, player_dict[player].result_lf = result[0], result[1]
+                    if (
+                        result
+                    ):  # If they roll something, add the roll result to player object
+                        player_dict[player].result, player_dict[player].result_lf = (
+                            result[0],
+                            result[1],
+                        )
                         print(f"{player_dict[player].name}'s result: {result[1]}")
                     else:  # Notify the players about the re-roll
                         print(f"{player_dict[player].name} will need to re-roll.")
                 else:
-                    print(f"{player_dict[player].name}'s result: {player_dict[player].result_lf}")
+                    print(
+                        f"{player_dict[player].name}'s result: {player_dict[player].result_lf}"
+                    )
         print("--------------------------------------")
 
 
@@ -111,13 +129,13 @@ def get_bracket_winners(bracket_list):
 
 def print_winner(player_dict, winner, wager, total_pot, game_mode):
     player = player_dict[winner]
-    if game_mode == 'PvP':
+    if game_mode == "PvP":
         player.increment_money(total_pot)
         return f"{player.name} nets {total_pot - wager} monies with {player.result_lf}!"
-    elif game_mode == 'BANK':
-        print('Bank mode is not currently supported.')
+    elif game_mode == "BANK":
+        print("Bank mode is not currently supported.")
     else:
-        print('Invalid game mode.')
+        print("Invalid game mode.")
 
 
 def determine_winner(bracket_list, player_dict, wager, total_pot, play_order):
@@ -132,27 +150,44 @@ def determine_winner(bracket_list, player_dict, wager, total_pot, play_order):
             for winner in bracket_winners:
                 player = player_dict[winner]
                 print(
-                    f"{player.name} ({player.result_lf}){' tied with' if not winner == bracket_winners[-1] else ''}")
+                    f"{player.name} ({player.result_lf}){' tied with' if not winner == bracket_winners[-1] else ''}"
+                )
             roll_off_dict = {player: player_dict[player] for player in bracket_winners}
-            return game_round_pvp(player_dict=roll_off_dict, roll_off=True, wager=wager, total_pot=total_pot,
-                                  play_order=play_order)
-    return print_winner(player_dict=player_dict, winner=round_winner, wager=wager, total_pot=total_pot,
-                        game_mode='PvP')
+            return game_round_pvp(
+                player_dict=roll_off_dict,
+                roll_off=True,
+                wager=wager,
+                total_pot=total_pot,
+                play_order=play_order,
+            )
+    return print_winner(
+        player_dict=player_dict,
+        winner=round_winner,
+        wager=wager,
+        total_pot=total_pot,
+        game_mode="PvP",
+    )
 
 
 def game_round_pvp(player_dict, roll_off=False, wager=0, total_pot=0, play_order=None):
     if not roll_off:
         # Get the wager, subtract from everyone's totals
-        wager, total_pot = get_wagers(player_dict, game_mode='PvP')
+        wager, total_pot = get_wagers(player_dict, game_mode="PvP")
 
     # Reset scores, then roll up all the players' dice
     score_reset(player_dict)
-    roll_all_players(player_dict=player_dict, game_mode='PvP', play_order=play_order)
+    roll_all_players(player_dict=player_dict, game_mode="PvP", play_order=play_order)
 
     # Separate into brackets and compare results
-    result_types = ['W', 'T', 'P', 'L']
-    brackets = [[(k, player_dict[k].result[1]) for k in player_dict.keys() if player_dict[k].result[0] == res_type] for
-                res_type in result_types]
+    result_types = ["W", "T", "P", "L"]
+    brackets = [
+        [
+            (k, player_dict[k].result[1])
+            for k in player_dict.keys()
+            if player_dict[k].result[0] == res_type
+        ]
+        for res_type in result_types
+    ]
 
     loser_bracket = brackets[-1]
     if loser_bracket and len(loser_bracket) == len(player_dict):
@@ -160,30 +195,34 @@ def game_round_pvp(player_dict, roll_off=False, wager=0, total_pot=0, play_order
 
     for bracket_list in brackets[:-1]:
         if bracket_list:
-            return determine_winner(bracket_list, player_dict, wager, total_pot, play_order)
+            return determine_winner(
+                bracket_list, player_dict, wager, total_pot, play_order
+            )
 
 
 def game_round_bank(player_dict, roll_off=False, wager=0, total_pot=0, banker=None):
     if not roll_off:
         # First determine banker/player order
-        play_order = determine_play_order(player_dict, game_mode='BANK')
+        play_order = determine_play_order(player_dict, game_mode="BANK")
         # Collect initial stake from banker
         # After that, allow remaining players to fade
         # Then banker rolls
-            # Determine if instant win
-            # Else players roll against banker
+        # Determine if instant win
+        # Else players roll against banker
 
 
 def determine_play_order(player_dict, game_mode):
     play_order = [f"player{i + 1}" for i in range(len(player_dict))]
-    if game_mode == 'PvP':
+    if game_mode == "PvP":
         shuffle(play_order)
         return play_order
-    elif game_mode == 'BANK':
+    elif game_mode == "BANK":
         banker_reset(player_dict)
         banker_index = randint(0, len(play_order))
-        print(f"{player_dict[play_order[banker_index]].name} has been randomly chosen as the banker.")
-        player_dict[f'{play_order[banker_index]}'].play_order = 'b'
+        print(
+            f"{player_dict[play_order[banker_index]].name} has been randomly chosen as the banker."
+        )
+        player_dict[f"{play_order[banker_index]}"].play_order = "b"
         return play_order[banker_index:] + play_order[:banker_index]
 
 

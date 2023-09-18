@@ -1,5 +1,7 @@
 class Player:
-    def __init__(self, name="Player", money=100, result=None, result_lf=None, banker=False):
+    def __init__(
+        self, name="Player", money=100, result=None, result_lf=None, banker=False
+    ):
         self.name = name
         self._money = money
         self.result = result
