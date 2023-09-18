@@ -54,7 +54,7 @@ def get_wagers(player_list, game_mode):
         for player in player_list:
             player_list[player].increment_money(-1 * wager)
 
-        print(f"Each player bets {wager}, for a total of {total_pot}.")
+        print(f"Each player bets {wager}, for a total pot of {total_pot}.")
         return wager, total_pot
     elif game_mode == 'BANK':
         # TODO: implement bank wagers

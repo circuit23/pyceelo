@@ -50,7 +50,7 @@ def main_game():
         if game_mode == 'PvP':
             if round_index == 1:
                 play_order = determine_play_order(player_list, game_mode='PvP')
-                input('Randomly determining order of play.  Press enter.')
+                input('Randomly determining order of play. Press Enter to continue.')
             result = game_round_pvp(active_players, play_order=play_order)
             print(result)
         elif game_mode == 'BANK':
